@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Student Management System Frontend - Deployable on Vercel",
   "scripts": {
-    "start": "serve -s .",
-    "build": "echo 'Frontend static build ready for Vercel deployment'"
+    "build": "node build.js",
+    "start": "serve -s dist"
   },
   "keywords": [
     "vercel",

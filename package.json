@@ -1,0 +1,8 @@
+{
+  "name": "student-management-system",
+  "version": "1.0.0",
+  "description": "Student Management System - CC_CA2",
+  "scripts": {
+    "build": "node frontend/build.js"
+  }
+}
