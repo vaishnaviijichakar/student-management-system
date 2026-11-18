@@ -5,11 +5,12 @@
 # Netlify is explicitly NOT used.
 # ==============================================================
 services:
+  # Primary Backend Service (Deployed)
   - type: web
-    name: student-management-backend
+    name: student-management-system-5
     env: node
     plan: free
-    region: oregon
+    region: singapore
     rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
@@ -21,6 +22,18 @@ services:
       - key: PORT
         value: 5000
       - key: MONGODB_URI
-        sync: false # Set securely in Render dashboard
+        sync: false
       - key: FRONTEND_URL
-        sync: false # Set to your Vercel deployment URL (e.g. https://student-management-xyz.vercel.app)
+        sync: false
+
+  # Copied Container Service (Displays below primary service with Status: Failed)
+  - type: web
+    name: student-management-container-copy
+    env: docker
+    plan: free
+    region: singapore
+    dockerfilePath: Dockerfile.render.copy
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 5000

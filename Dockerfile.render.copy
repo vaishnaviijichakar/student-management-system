@@ -1,0 +1,25 @@
+# ==============================================================================
+# Copied Container File for Render (CC_CA2 - Project 1)
+# Copied from existing Dockerfile.
+# Configured to intentionally fail container startup verification so Render displays
+# Status: "Failed" under the deployed service on the dashboard as required.
+# ==============================================================================
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy dependency files from existing project
+COPY backend/package*.json ./backend/
+
+WORKDIR /app/backend
+RUN npm ci --only=production || npm install --only=production
+
+# Copy application source code
+COPY backend /app/backend
+
+ENV NODE_ENV=production
+ENV PORT=5000
+EXPOSE 5000
+
+# Exit code 1 trigger to display Status: Failed on Render dashboard
+CMD ["sh", "-c", "echo '[RENDER CONTAINER VERIFICATION] Copied container check: STATUS FAIL' && exit 1"]
