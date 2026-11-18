@@ -6,7 +6,7 @@
 // Configuration: Default Backend API URL
 const DEFAULT_API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:5000'
-  : 'https://student-management-backend.onrender.com';
+  : 'https://student-management-system-5-mexi.onrender.com';
 
 let currentApiUrl = localStorage.getItem('sms_backend_url') || DEFAULT_API_URL;
 let studentsData = [];
