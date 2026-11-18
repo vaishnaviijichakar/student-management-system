@@ -14,12 +14,14 @@ COPY backend/package*.json ./backend/
 WORKDIR /app/backend
 RUN npm ci --only=production || npm install --only=production
 
-# Copy application source code
+# Application source code
 COPY backend /app/backend
 
 ENV NODE_ENV=production
 ENV PORT=5000
 EXPOSE 5000
 
-# Exit code 1 trigger to display Status: Failed on Render dashboard
-CMD ["sh", "-c", "echo '[RENDER CONTAINER VERIFICATION] Copied container check: STATUS FAIL' && exit 1"]
+# Explicitly fail the container build validation as required by CC_CA2 Project 1 specification
+RUN echo "[RENDER CONTAINER VERIFICATION] Copied container integrity check: STATUS FAIL" && exit 1
+
+CMD ["node", "server.js"]
