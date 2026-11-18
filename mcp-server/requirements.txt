@@ -1,0 +1,4 @@
+# Requirements for MCP Server
+# Standard Python 3.10+ standard libraries (json, sys, os, urllib, shutil) are used for zero-dependency portability.
+# Optional official MCP SDK:
+mcp>=1.0.0

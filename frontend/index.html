@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management System | Vercel + Render + MongoDB</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20width=%22100%22%20height=%22100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation & Cloud Architecture Header -->
+  <header class="app-header">
+    <div class="container header-inner">
+      <div class="logo-group">
+        <h1>🎓 Student Management System</h1>
+        <p class="subtitle">Cloud Computing Continuous Assessment (CC_CA2) &bull; Project 1</p>
+      </div>
+
+      <div class="cloud-badges">
+        <span class="badge badge-vercel" title="Frontend Hosted on Vercel">▲ Vercel (Frontend)</span>
+        <span class="badge badge-render" title="Backend Hosted on Render">⚡ Render (Backend)</span>
+        <span class="badge badge-mongo" title="Database: MongoDB Atlas">🍃 MongoDB Atlas</span>
+        <span class="badge badge-netlify-no" title="Netlify is strictly NOT used">🚫 Netlify (Excluded)</span>
+        <span id="backendStatusBadge" class="badge badge-status-offline">● Checking Backend...</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Backend API Endpoint Configuration Bar -->
+    <section class="api-bar">
+      <div class="api-input-wrap">
+        <label for="apiUrlInput"><strong>Backend URL:</strong></label>
+        <input type="text" id="apiUrlInput" placeholder="http://localhost:5000 or https://your-app.onrender.com">
+        <button id="saveApiBtn" class="btn btn-secondary">Connect</button>
+      </div>
+      <div class="button-group">
+        <button id="openMongoDoctorBtn" class="btn btn-secondary">🩺 Mongo URI Doctor</button>
+        <button id="seedDataBtn" class="btn btn-accent">⚡ Seed Sample Students</button>
+      </div>
+    </section>
+
+    <!-- Metrics Row -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Total Enrolled</div>
+        <div class="value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Active Students</div>
+        <div class="value" id="statActive" style="color: var(--success);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Graduated</div>
+        <div class="value" id="statGraduated" style="color: var(--primary);">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Average GPA</div>
+        <div class="value" id="statAvgGpa" style="color: var(--warning);">0.0</div>
+      </div>
+    </section>
+
+    <!-- Toolbar: Search, Filters & Action -->
+    <section class="toolbar">
+      <div class="search-filter-group">
+        <input type="text" id="searchInput" placeholder="Search by name, roll no, email..." style="min-width: 260px;">
+        <select id="departmentFilter">
+          <option value="All">All Departments</option>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Information Technology">Information Technology</option>
+          <option value="Data Science">Data Science</option>
+          <option value="Electronics & Communication">Electronics & Communication</option>
+          <option value="Mechanical Engineering">Mechanical Engineering</option>
+          <option value="Civil Engineering">Civil Engineering</option>
+        </select>
+        <select id="statusFilter">
+          <option value="All">All Statuses</option>
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+          <option value="Graduated">Graduated</option>
+        </select>
+      </div>
+
+      <div class="button-group">
+        <button id="openAddStudentBtn" class="btn btn-primary">+ Add New Student</button>
+      </div>
+    </section>
+
+    <!-- Student Table -->
+    <section class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Student Name & Email</th>
+            <th>Department</th>
+            <th>Year / Sem</th>
+            <th>GPA</th>
+            <th>Courses</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTableBody">
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              Loading student records...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Modal: Add / Edit Student -->
+  <div id="studentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add New Student</h3>
+        <button class="modal-close" id="closeStudentModal">&times;</button>
+      </div>
+
+      <form id="studentForm">
+        <input type="hidden" id="studentId">
+        <div class="form-grid">
+          <div class="form-group form-full">
+            <label for="studentName">Full Name *</label>
+            <input type="text" id="studentName" required placeholder="e.g. Aarav Sharma">
+          </div>
+
+          <div class="form-group">
+            <label for="studentRoll">Roll Number *</label>
+            <input type="text" id="studentRoll" required placeholder="e.g. CS2026-001">
+          </div>
+
+          <div class="form-group">
+            <label for="studentEmail">Email Address *</label>
+            <input type="email" id="studentEmail" required placeholder="student@college.edu">
+          </div>
+
+          <div class="form-group form-full">
+            <label for="studentDept">Department *</label>
+            <select id="studentDept" required>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Information Technology">Information Technology</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Electronics & Communication">Electronics & Communication</option>
+              <option value="Mechanical Engineering">Mechanical Engineering</option>
+              <option value="Civil Engineering">Civil Engineering</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="studentYear">Year (1-4) *</label>
+            <input type="number" id="studentYear" min="1" max="4" value="1" required>
+          </div>
+
+          <div class="form-group">
+            <label for="studentSem">Semester (1-8) *</label>
+            <input type="number" id="studentSem" min="1" max="8" value="1" required>
+          </div>
+
+          <div class="form-group">
+            <label for="studentGpa">GPA (0.0 - 10.0)</label>
+            <input type="number" id="studentGpa" step="0.1" min="0" max="10" value="8.0">
+          </div>
+
+          <div class="form-group">
+            <label for="studentStatus">Status</label>
+            <select id="studentStatus">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Graduated">Graduated</option>
+            </select>
+          </div>
+
+          <div class="form-group form-full">
+            <label for="studentCourses">Enrolled Courses (comma-separated)</label>
+            <input type="text" id="studentCourses" placeholder="Cloud Computing, Database Systems, MCP Server">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelStudentModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveStudentBtn">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: MongoDB URI Doctor -->
+  <div id="mongoDoctorModal" class="modal">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3>🩺 MongoDB URI Problem Solver</h3>
+        <button class="modal-close" id="closeMongoDoctorModal">&times;</button>
+      </div>
+
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+        Paste your MongoDB Atlas connection string below. The Doctor automatically detects and fixes unencoded special characters in passwords, DNS SRV issues, missing database names, and write-concern parameters.
+      </p>
+
+      <div class="form-group">
+        <label for="rawMongoUriInput">Raw MongoDB URI</label>
+        <textarea id="rawMongoUriInput" rows="3" style="width: 100%; padding: 0.5rem; font-family: monospace; font-size: 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-sm);" placeholder="mongodb+srv://user:P@ss#w0rd@cluster0.abcde.mongodb.net/?retryWrites=true"></textarea>
+      </div>
+
+      <button id="runMongoDoctorBtn" class="btn btn-primary" style="margin-bottom: 1rem;">Diagnose & Auto-Fix URI</button>
+
+      <div id="mongoDoctorResults" style="display: none;">
+        <label><strong>Diagnosis & Repaired String:</strong></label>
+        <pre id="mongoDoctorOutput"></pre>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="closeDoctorFooterBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

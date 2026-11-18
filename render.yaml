@@ -1,0 +1,26 @@
+# ==============================================================
+# Render Blueprint (Infrastructure-as-Code)
+# Project 1: Student Management System Backend on Render
+# Note: Render is used for backend; Vercel is used for frontend.
+# Netlify is explicitly NOT used.
+# ==============================================================
+services:
+  - type: web
+    name: student-management-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # Set securely in Render dashboard
+      - key: FRONTEND_URL
+        sync: false # Set to your Vercel deployment URL (e.g. https://student-management-xyz.vercel.app)

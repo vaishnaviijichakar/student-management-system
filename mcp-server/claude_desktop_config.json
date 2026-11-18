@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "student-management-unified-mcp": {
+      "command": "python",
+      "args": [
+        "c:/Users/hp/OneDrive/Desktop/CC_CA2/Student-managemen-system/mcp-server/mcp_unified_server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "NODE_ENV": "production"
+      }
+    },
+    "platform-orchestrator-mcp": {
+      "command": "python",
+      "args": [
+        "c:/Users/hp/OneDrive/Desktop/CC_CA2/Student-managemen-system/mcp-server/tools/platform_updater.py"
+      ]
+    },
+    "container-engine-mcp": {
+      "command": "python",
+      "args": [
+        "c:/Users/hp/OneDrive/Desktop/CC_CA2/Student-managemen-system/mcp-server/tools/container_manager.py"
+      ]
+    },
+    "mongodb-doctor-mcp": {
+      "command": "python",
+      "args": [
+        "c:/Users/hp/OneDrive/Desktop/CC_CA2/Student-managemen-system/mcp-server/tools/mongo_doctor.py"
+      ]
+    }
+  }
+}
